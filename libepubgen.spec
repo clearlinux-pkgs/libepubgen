@@ -4,14 +4,14 @@
 #
 Name     : libepubgen
 Version  : 0.1.1
-Release  : 4
+Release  : 5
 URL      : https://dev-www.libreoffice.org/src/libepubgen-0.1.1.tar.xz
 Source0  : https://dev-www.libreoffice.org/src/libepubgen-0.1.1.tar.xz
 Summary  : EPUB generator library for librevenge
 Group    : Development/Tools
 License  : MPL-2.0-no-copyleft-exception
-Requires: libepubgen-lib
-Requires: libepubgen-license
+Requires: libepubgen-lib = %{version}-%{release}
+Requires: libepubgen-license = %{version}-%{release}
 BuildRequires : boost-dev
 BuildRequires : doxygen
 BuildRequires : libxml2-dev
@@ -29,8 +29,9 @@ generate EPUB from many sources.
 %package dev
 Summary: dev components for the libepubgen package.
 Group: Development
-Requires: libepubgen-lib
-Provides: libepubgen-devel
+Requires: libepubgen-lib = %{version}-%{release}
+Provides: libepubgen-devel = %{version}-%{release}
+Requires: libepubgen = %{version}-%{release}
 
 %description dev
 dev components for the libepubgen package.
@@ -47,7 +48,7 @@ doc components for the libepubgen package.
 %package lib
 Summary: lib components for the libepubgen package.
 Group: Libraries
-Requires: libepubgen-license
+Requires: libepubgen-license = %{version}-%{release}
 
 %description lib
 lib components for the libepubgen package.
@@ -63,28 +64,37 @@ license components for the libepubgen package.
 
 %prep
 %setup -q -n libepubgen-0.1.1
+cd %{_builddir}/libepubgen-0.1.1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1534629117
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1592623581
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %configure --disable-static
 make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1534629117
+export SOURCE_DATE_EPOCH=1592623581
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/libepubgen
-cp COPYING %{buildroot}/usr/share/doc/libepubgen/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/libepubgen
+cp %{_builddir}/libepubgen-0.1.1/COPYING %{buildroot}/usr/share/package-licenses/libepubgen/9744cedce099f727b327cd9913a1fdc58a7f5599
 %make_install
 
 %files
@@ -112,5 +122,5 @@ cp COPYING %{buildroot}/usr/share/doc/libepubgen/COPYING
 /usr/lib64/libepubgen-0.1.so.1.0.1
 
 %files license
-%defattr(-,root,root,-)
-/usr/share/doc/libepubgen/COPYING
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/libepubgen/9744cedce099f727b327cd9913a1fdc58a7f5599
