@@ -4,7 +4,7 @@
 #
 Name     : libepubgen
 Version  : 0.1.1
-Release  : 5
+Release  : 6
 URL      : https://dev-www.libreoffice.org/src/libepubgen-0.1.1.tar.xz
 Source0  : https://dev-www.libreoffice.org/src/libepubgen-0.1.1.tar.xz
 Summary  : EPUB generator library for librevenge
